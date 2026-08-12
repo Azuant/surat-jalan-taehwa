@@ -1,278 +1,211 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gudang Taehwa - SJ Resmi</title>
-<script src="https://unpkg.com/html5-qrcode"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surat Jalan 1/2 A4 - PT TAEHWA</title>
 <style>
-:root{--biru:#2563eb; --hijau:#16a34a; --kuning:#f59e0b; --abu:#f1f5f9;}
-*{box-sizing:border-box;font-family:'Segoe UI'} body{background:var(--abu);margin:0;padding:0}
-.header{background:linear-gradient(135deg,var(--biru),#1e40af);color:white;padding:20px;text-align:center}
-.container{display:grid;grid-template-columns:1fr;gap:15px;padding:15px}
-@media(min-width:900px){.container{grid-template-columns:1fr 1fr}}
-.card{background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.card h3{color:var(--biru);border-bottom:2px solid var(--abu);padding-bottom:8px;margin-bottom:15px}
-.input{width:100%;padding:10px;margin:5px 0;border:1px solid #ddd;border-radius:8px;font-size:14px}
-.btn{padding:12px;border:none;border-radius:8px;font-weight:700;color:white;cursor:pointer;width:100%;margin-top:8px}
-.btn-biru{background:var(--biru)}.btn-hijau{background:var(--hijau)}.btn-kuning{background:var(--kuning);color:#000}
-.tabel{width:100%;font-size:13px;border-collapse:collapse;margin-top:10px}
-.tabel td,.tabel th{border:1px solid #eee;padding:8px;text-align:left}
-#reader{width:100%;margin:10px 0;border-radius:8px;overflow:hidden}
-.notif{padding:10px;border-radius:8px;margin-top:10px;display:none;background:#dcfce7;color:#166534}
-.menu{display:flex;gap:10px;padding:10px;flex-wrap:wrap}
+    @page { size: 210mm 148mm; margin: 5mm; }
+    body { font-family: Arial, sans-serif; font-size: 9px; margin: 0; padding: 5px; background:#f1f5f9; }
+    .container { width: 100%; height: 138mm; border: 1.5px solid #000; display: flex; flex-direction: column; background:white; }
+    .header { display: flex; border-bottom: 1.5px solid #000; height: 22mm; }
+    .logo { width: 18mm; border-right: 1.5px solid #000; text-align: center; padding: 2px; }
+    .logo div { border: 1.5px solid #000; width: 12mm; height: 12mm; margin: auto; font-size: 14px; font-weight: bold; line-height: 12mm; }
+    .company { flex: 1; padding: 2px 4px; }
+    .company h2 { margin: 0; font-size: 10px; }
+    .company small { font-size: 7.5px; line-height: 1.2; }
+    .title { width: 35mm; text-align: center; padding: 2px; border-left: 1.5px solid #000; }
+    .title h1 { margin: 0; font-size: 12px; text-decoration: underline; }
+    .title .row { font-size: 8px; }
+    .title input { width: 25mm; border: none; border-bottom: 1px solid #000; font-size: 8px; }
+    .info { display: flex; border-bottom: 1.5px solid #000; height: 28mm; }
+    .info-left { width: 55%; border-right: 1.5px solid #000; padding: 2px 4px; }
+    .info-right { width: 45%; padding: 2px 4px; }
+    .row { display: flex; margin-bottom: 1px; align-items: center; }
+    .row label { width: 28mm; font-size: 8px; }
+    .row input { border: none; border-bottom: 1px solid #000; flex: 1; outline: none; font-size: 8px; height: 4mm; }
+    table { width: 100%; border-collapse: collapse; flex: 1; }
+    th, td { border: 1px solid #000; padding: 1px; text-align: center; font-size: 8px; }
+    th { background: #f0f0f0; height: 5mm; }
+    td input { width: 100%; border: none; outline: none; text-align: center; font-size: 8px; }
+    .footer { display: flex; height: 28mm; }
+    .footer-left { width: 40%; display: flex; flex-direction: column; }
+    .sign-box { border-bottom: 1px solid #000; flex: 1; padding: 1px 3px; font-size: 8px; }
+    .sign-name { border-top: 1px solid #000; text-align: center; padding: 1px; font-size: 7px; }
+    .footer-right { width: 60%; border-left: 1.5px solid #000; }
+    .total-row td { font-weight: bold; }
+    .note { font-size: 6.5px; padding: 2px 4px; }
+    .toolbar { margin: 10px; text-align:center; }
+    .btn { margin: 5px; padding: 8px 15px; background: #15803d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; }
+    .btn.blue { background: #2563eb; }
+    @media print { .toolbar { display: none; } body { padding: 0; background:white; } }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>📦 APLIKASI GUDANG TAEHWA</h1>
-  <p>Format Surat Jalan Resmi</p>
+<div class="toolbar">
+    <button class="btn" onclick="window.print()">🖨️ Cetak A5</button>
+    <button class="btn" onclick="tambahBaris()">+ Tambah Barang</button>
+    <button class="btn blue" onclick="simpanKeSheet()">💾 Simpan ke Google Sheet</button>
+    <p id="status"></p>
 </div>
 
-<div class="menu">
-  <button onclick="showTab('input')" class="btn btn-biru" style="width:auto">Input Data</button>
-  <button onclick="showTab('cari')" class="btn btn-biru" style="width:auto">Cari SJ</button>
-  <button onclick="exportExcel()" class="btn btn-hijau" style="width:auto">Export Excel</button>
-</div>
+<div class="container" id="suratJalan">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo"><div>T</div></div>
+        <div class="company">
+            <h2>PT. TAEHWA INTERNATIONAL</h2>
+            <small>(CARTON BOX, POLY BAG)</small><br>
+            <small>Jl. Raya Narogong Km.9, Nurul Huda No.7</small><br>
+            <small>Bantar Gebang - Bekasi 17310</small><br>
+            <small>Telp. (021) 8250 0675, 8250 185, 8250 186</small><br>
+            <small>Fax. (021) 83603505</small>
+        </div>
+        <div class="title">
+            <h1>SURAT JALAN</h1>
+            <div class="row">SJ. No. :<input type="text" id="noSJ"></div>
+        </div>
+    </div>
 
-<!-- TAB INPUT -->
-<div id="tab-input" class="container">
-  <!-- BARANG MASUK -->
-  <div class="card">
-    <h3>📥 BARANG MASUK</h3>
-    <input id="m_tgl" type="date" class="input">
-    <input id="m_no" class="input" placeholder="No Bukti: BM-001">
-    <select id="m_barang" class="input"><option>Loading...</option></select>
-    <input id="m_qty" type="number" class="input" placeholder="Qty Masuk">
-    <input id="m_sup" class="input" placeholder="Supplier">
-    <button class="btn btn-hijau" onclick="simpan('masuk')">Simpan Barang Masuk</button>
-    <div id="notifM" class="notif">Data berhasil disimpan & Stok Bertambah!</div>
-  </div>
+    <!-- INFO -->
+    <div class="info">
+        <div class="info-left">
+            <div class="row"><label>NO. SURAT JALAN :</label><input type="text" id="noSurat"></div>
+            <div class="row"><label>BUYER</label><input type="text" id="buyer"></div>
+            <div class="row"><label>P/O #</label><input type="text" id="po"></div>
+            <div class="row"><label>STYLE</label><input type="text" id="style"></div>
+            <div class="row"><label>NAMA BARANG</label><input type="text" id="namaBarang"></div>
+            <div class="row"><label>UKURAN</label><input type="text" id="ukuran"></div>
+        </div>
+        <div class="info-right">
+            <div class="row"><label>TANGGAL</label><input type="date" id="tanggal"></div>
+            <div class="row"><label>KEPADA</label><input type="text" id="kepada"></div>
+            <div class="row"><label>ALAMAT</label><input type="text" id="alamat"></div>
+            <div class="row"><label>NO KENDARAAN :</label><input type="text" id="noKendaraan"></div>
+            <div class="row"><label>NAMA ORDER</label><input type="text" id="namaOrder"></div>
+        </div>
+    </div>
 
-  <!-- SURAT JALAN -->
-  <div class="card">
-    <h3>🚚 SURAT JALAN</h3>
-    <input id="k_tgl" type="date" class="input">
-    <input id="k_no" class="input" readonly placeholder="Auto No SJ">
-    <input id="k_buyer" class="input" placeholder="Buyer">
-    <input id="k_po" class="input" placeholder="P/O #">
-    <input id="k_tujuan" class="input" placeholder="Alamat Tujuan">
-    <input id="k_driver" class="input" placeholder="No Kendaraan / Driver">
-    <input id="k_kepada" class="input" placeholder="Kepada">
-    <input id="k_namaOrder" class="input" placeholder="Nama Order">
-    <button class="btn btn-kuning" onclick="startScanner()">📷 Scan Barcode Barang</button>
-    <div id="reader" style="display:none"></div>
-    <select id="k_barang" class="input"><option>Loading...</option></select>
-    <input id="k_style" class="input" placeholder="Style">
-    <input id="k_ukuran" class="input" placeholder="Ukuran">
-    <input id="k_qty" type="number" class="input" placeholder="Qty Keluar">
-    <input id="k_foto" type="file" accept="image/*" capture="camera" class="input">
-    <button class="btn btn-kuning" onclick="tambahBarang()">+ Tambah ke Daftar</button>
-    <table class="tabel" id="tabelBarangSJ"><thead><tr><th>Style</th><th>Nama</th><th>Ukuran</th><th>Qty</th><th>Hapus</th></tr></thead><tbody></tbody></table>
-    <button class="btn btn-biru" onclick="simpan('keluar')">Simpan & Cetak SJ</button>
-    <div id="notifK" class="notif">Data berhasil disimpan & Stok Berkurang!</div>
-  </div>
-</div>
+    <!-- TABEL BARANG -->
+    <table id="tabelBarang">
+        <thead>
+            <tr>
+                <th style="width:6%">NO</th>
+                <th>NAMA BARANG</th>
+                <th style="width:15%">UKURAN</th>
+                <th style="width:12%">JUMLAH</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyBarang">
+            <tr>
+                <td>1</td>
+                <td><input type="text" class="barang"></td>
+                <td><input type="text" class="ukuran"></td>
+                <td><input type="number" class="jumlah" oninput="hitungTotal()"></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="3">TOTAL</td>
+                <td id="totalJumlah">0</td>
+            </tr>
+        </tfoot>
+    </table>
 
-<!-- TAB CARI -->
-<div id="tab-cari" class="card" style="display:none;margin:15px">
-  <h3>🔍 CARI SURAT JALAN</h3>
-  <input id="keyword" class="input" placeholder="Ketik No SJ atau Nama Buyer">
-  <button class="btn btn-biru" onclick="cariData()">Cari</button>
-  <div id="hasilCari" style="overflow-x:auto;margin-top:10px"></div>
-</div>
-
-<!-- TABEL STOK -->
-<div class="card" style="margin:15px">
-  <h3>📊 STOK SAAT INI</h3>
-  <div style="overflow-x:auto">
-    <table class="tabel" id="tabelStok"><thead><tr><th>Kode</th><th>Nama Barang</th><th>Satuan</th><th>Stok</th></tr></thead><tbody></tbody></table>
-  </div>
+    <!-- FOOTER TANDA TANGAN -->
+    <div class="footer">
+        <div class="footer-left">
+            <div class="sign-box">DITERIMA<br><br><div class="sign-name">Nama Jelas<br>______</div></div>
+            <div class="sign-box">PENGIRIM<br><br><div class="sign-name">Nama Jelas<br>______</div></div>
+            <div class="sign-box">DISETUJUI<br><br><div class="sign-name">Nama Jelas<br>______</div></div>
+        </div>
+        <div class="footer-right"><div style="height:100%"></div></div>
+    </div>
+    <div class="note">(1) PUTIH:Pelengkap tagihan (2) HIJAU:Dikembalikan (3) KUNING/PINK/BIRU:Customer</div>
 </div>
 
 <script>
-const URL_SCRIPT = "PASTE_URL_APPS_SCRIPT_DISINI";
-let dataBarang = []; let listBarangSJ = []; let base64Foto = ''; let html5QrCode;
+// ========== KODE SUDAH DIHUBUNGKAN KE APPS SCRIPT ==========
+const API_URL = "https://script.google.com/macros/s/AKfycbzGRf2WcPy9wrccZRREOoHjcvjr8R-JxLJgcJcnmdfNJXLAPJIxpzQcb9WRUQy04te6KQ/exec";
 
-// INIT
-m_tgl.valueAsDate = new Date(); k_tgl.valueAsDate = new Date();
-loadDataBarang(); getNoSJ();
-
-function showTab(tab){
-  tab-input.style.display='none'; tab-cari.style.display='none';
-  document.getElementById('tab-'+tab).style.display='grid';
+// AUTO NOMOR SJ + TANGGAL
+window.onload = function(){
+    const today = new Date();
+    const tgl = today.toISOString().slice(0,10).replace(/-/g,'');
+    const random = Math.floor(Math.random() * 900 + 100);
+    document.getElementById('noSJ').value = `SJ${tgl}-${random}`;
+    document.getElementById('tanggal').value = today.toISOString().slice(0,10);
 }
 
-function loadDataBarang(){
-  google.script.run.withSuccessHandler(data=>{
-    dataBarang = data;
-    let opt='<option value="">-- Pilih Barang --</option>';
-    let tr='';
-    data.forEach(r=>{
-      if(r[0]) {
-        opt += `<option value="${r[0]}|${r[1]}">${r[0]} - ${r[1]} | Stok: ${r[3]}</option>`;
-        tr += `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><b>${r[3]}</b></td></tr>`;
-      }
+let no = 1;
+function tambahBaris(){
+    no++;
+    const tbody = document.getElementById('tbodyBarang');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td>${no}</td>
+        <td><input type="text" class="barang"></td>
+        <td><input type="text" class="ukuran"></td>
+        <td><input type="number" class="jumlah" oninput="hitungTotal()"></td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function hitungTotal(){
+    let total = 0;
+    document.querySelectorAll('.jumlah').forEach(el => { total += parseInt(el.value) || 0; });
+    document.getElementById('totalJumlah').innerText = total;
+}
+
+async function simpanKeSheet(){
+    document.getElementById('status').innerText = "⏳ Menyimpan...";
+    const barang = [];
+    document.querySelectorAll('#tbodyBarang tr').forEach(tr => {
+        let nama = tr.querySelector('.barang').value;
+        if(nama != ""){ // biar gak simpan baris kosong
+            barang.push({
+                nama: nama,
+                ukuran: tr.querySelector('.ukuran').value,
+                jumlah: tr.querySelector('.jumlah').value
+            });
+        }
     });
-    m_barang.innerHTML=opt; k_barang.innerHTML=opt;
-    tabelStok.querySelector('tbody').innerHTML=tr;
-  }).getDataBarang();
+
+    if(barang.length == 0){
+        alert("Isi minimal 1 barang dulu!");
+        return;
+    }
+
+    const data = {
+        action: "simpanKeluar",
+        noSJ: noSJ.value,
+        noSurat: noSurat.value,
+        tanggal: tanggal.value,
+        buyer: buyer.value,
+        kepada: kepada.value,
+        alamat: alamat.value,
+        po: po.value,
+        style: style.value,
+        noKendaraan: noKendaraan.value,
+        namaOrder: namaOrder.value,
+        total: totalJumlah.innerText,
+        barang: barang
+    };
+
+    try {
+        await fetch(API_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', // biar gak kena CORS
+            body: JSON.stringify(data) 
+        });
+        document.getElementById('status').innerText = "✅ Berhasil disimpan ke Google Sheet";
+        alert("Data Surat Jalan Tersimpan!");
+    } catch(err){
+        document.getElementById('status').innerText = "❌ Gagal simpan. Cek URL & Internet";
+        console.log(err);
+    }
 }
-
-function getNoSJ(){ google.script.run.withSuccessHandler(n=>k_no.value=n).getLastSJ(); }
-
-function startScanner(){
-  reader.style.display='block';
-  html5QrCode = new Html5Qrcode("reader");
-  html5QrCode.start({facingMode:"environment"},{fps:10},msg=>{
-    k_barang.value=msg;
-    html5QrCode.stop(); reader.style.display='none';
-  });
-}
-
-k_foto.onchange=e=>{const f=e.target.files[0]; if(f){const r=new FileReader(); r.onload=()=>base64Foto=r.result.split(',')[1]; r.readAsDataURL(f);}}
-
-function tambahBarang(){
-  if(!k_barang.value ||!k_qty.value){alert("Pilih barang dan isi qty dulu"); return;}
-  let b=k_barang.value.split('|');
-  listBarangSJ.push({kode:b[0],nama:b[1],style:k_style.value,ukuran:k_ukuran.value,qty:k_qty.value});
-  renderTabelSJ(); k_style.value=''; k_ukuran.value=''; k_qty.value='';
-}
-function renderTabelSJ(){
-  tabelBarangSJ.querySelector('tbody').innerHTML=listBarangSJ.map((b,i)=>`<tr><td>${b.style}</td><td>${b.nama}</td><td>${b.ukuran}</td><td>${b.qty}</td><td><button onclick="listBarangSJ.splice(${i},1);renderTabelSJ()">Hapus</button></td></tr>`).join('');
-}
-
-function simpan(tipe){
-  let data={tipe:tipe};
-  let notif = tipe=='masuk'? notifM : notifK;
-  if(tipe=="masuk"){
-    let b=m_barang.value.split('|');
-    if(!b[0]){alert("Pilih barang dulu"); return;}
-    data={...data,tanggal:m_tgl.value,noBukti:m_no.value,kode:b[0],nama:b[1],qty:m_qty.value,supplier:m_sup.value}
-  } else {
-    if(listBarangSJ.length==0){alert("Tambah barang dulu"); return;}
-    data={...data,idSJ:'ID'+Date.now(),tanggal:k_tgl.value,noSJ:k_no.value,buyer:k_buyer.value,po:k_po.value,tujuan:k_tujuan.value,driver:k_driver.value,kepada:k_kepada.value,namaOrder:k_namaOrder.value,barang:listBarangSJ,foto:base64Foto}
-    cetakSJ(d);
-  }
-  fetch(URL_SCRIPT,{method:"POST",body:JSON.stringify(data)})
-.then(res=>res.json())
-.then(()=>{notif.style.display='block'; setTimeout(()=>{notif.style.display='none'; location.reload()},2000)})
-}
-
-// FUNGSI CETAK FORMAT RESMI TAEHWA
-function cetakSJ(d){
-  let rows = '';
-  let totalQty = 0;
-  d.barang.forEach(b=>{
-    totalQty += Number(b.qty);
-    rows += `<tr>
-      <td>${b.style}</td>
-      <td></td>
-      <td style="text-align:left">${b.nama}</td>
-      <td>${b.ukuran}</td>
-      <td></td>
-      <td style="text-align:center">${b.qty}</td>
-    </tr>`;
-  });
-
-  let win=window.open('');
-  win.document.write(`
-  <html>
-  <head>
-    <title>Surat Jalan ${d.noSJ}</title>
-    <style>
-      body{font-family:Arial, sans-serif; font-size:11px; margin:20px;}
-     .kop{display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #000; padding-bottom:5px}
-     .kop-kiri{line-height:1.4}
-     .kop-kanan{text-align:right; line-height:1.4; font-size:24px; font-weight:bold}
-     .judul{text-align:center; font-size:18px; font-weight:bold; text-decoration:underline; margin:10px 0}
-     .info-atas{display:flex; justify-content:space-between; margin-bottom:10px}
-     .tabel-sj{width:100%; border-collapse:collapse; border:1px solid #000}
-     .tabel-sj th,.tabel-sj td{border:1px solid #000; padding:4px; text-align:center}
-     .tabel-sj th{background:#f0f0f0; font-weight:bold}
-     .ttd{width:100%; margin-top:20px; border-collapse:collapse}
-     .ttd td{border:1px solid #000; height:70px; vertical-align:top; padding:5px; width:25%}
-     .catatan{font-size:9px; margin-top:5px}
-    </style>
-  </head>
-  <body onload="window.print()">
-
-    <div class="kop">
-      <div class="kop-kiri">
-        <div style="font-size:16px; font-weight:bold">PT. TAEHWA INTERNATIONAL</div>
-        <div>(CARTON BOX, POLY BAG)</div>
-        <div>Jl. Raya Narogong Km 9, Nurul Huda No.7</div>
-        <div>Bantar Gebang - Bekasi 17310</div>
-        <div>Telp. (021) 8265 0675, 8250 185, 8250 186</div>
-        <div>Fax. (021) 83803905</div>
-      </div>
-      <div class="kop-kanan">T<br><b>SJ. No. : ${d.noSJ}</b></div>
-    </div>
-
-    <div class="judul">SURAT JALAN</div>
-
-    <div class="info-atas">
-      <div>
-        <table>
-          <tr><td>NO. SURAT JALAN :</td><td><b>${d.noSJ}</b></td></tr>
-          <tr><td>BUYER</td><td>: ${d.buyer}</td></tr>
-          <tr><td>P/O #</td><td>: ${d.po}</td></tr>
-        </table>
-      </div>
-      <div>
-        <table>
-          <tr><td>TANGGAL</td><td>: ${d.tanggal}</td></tr>
-          <tr><td>KEPADA</td><td>: ${d.kepada}</td></tr>
-          <tr><td>ALAMAT</td><td>: ${d.tujuan}</td></tr>
-          <tr><td>NO KENDARAAN</td><td>: ${d.driver}</td></tr>
-          <tr><td>NAMA ORDER</td><td>: ${d.namaOrder}</td></tr>
-        </table>
-      </div>
-    </div>
-
-    <table class="tabel-sj">
-      <thead>
-        <tr>
-          <th style="width:10%">STYLE</th>
-          <th style="width:20%">NAMA BARANG</th>
-          <th style="width:30%">NAMA BARANG</th>
-          <th style="width:10%">UKURAN</th>
-          <th style="width:10%"></th>
-          <th style="width:10%">JUMLAH</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows}
-        <tr>
-          <td colspan="5" style="text-align:right; font-weight:bold">TOTAL</td>
-          <td style="font-weight:bold">${totalQty}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table class="ttd">
-      <tr>
-        <td>DITERIMA<br><br><br>Nama Jelas:.................</td>
-        <td>PENGIRIM<br><br><br>Nama Jelas:.................</td>
-        <td>DISETUJUI<br><br><br>Nama Jelas:.................</td>
-        <td rowspan="2" style="text-align:center; vertical-align:middle">[STEMPEL]</td>
-      </tr>
-      <tr>
-        <td colspan="3" class="catatan">
-          (1) PUTIH: Pelengkap tagihan (2) HIJAU: Dikembalikan (3) KUNING,PINK,BIRU: Customer
-        </td>
-      </tr>
-    </table>
-
-  </body></html>`);
-}
-function cariData(){
-  google.script.run.withSuccessHandler(d=>{
-    let tr=d.map(r=>`<tr><td>${r[2]}</td><td>${r[1]}</td><td>${r[3]}</td><td>${r[6]}</td></tr>`).join('');
-    hasilCari.innerHTML=`<table class="tabel"><tr><th>No SJ</th><th>Tgl</th><th>Buyer</th><th>Barang</th></tr>${tr}</table>`
-  }).cariSJ(keyword.value)
-}
-function exportExcel(){ window.open(URL_SCRIPT+'?action=export') }
 </script>
 </body>
 </html>
